@@ -20,7 +20,7 @@ Verified against the supplied Smart Campus Analytics brief on 9 October 2026. Th
 
 ## Completed checks
 
-- 40 automated tests passed: existing agents, seven-category scoring, cleaning, contribution arithmetic, dates, freshness, segmentation, API permissions, imports, rollback, duplicates, assignments, shared roster calculations, and public assets.
+- 55 automated tests passed: existing agents, six-component configurable scoring over seven source categories, cleaning, contribution arithmetic, dates, freshness, segmentation, API permissions, imports, rollback, duplicates, assignments, shared roster calculations, and public assets.
 - Clean dependency install in an isolated checkout passed; package audit reported zero known vulnerabilities at install time.
 - Real local MySQL verification passed using disposable records inside a transaction: seven-category integration, complete coverage, per-field freshness, dated trends, department/student scope, and database unique constraints. All test records were rolled back.
 - DOM runtime checks passed: demo entry, six-student roster, search, department filtering, seven-source drill-down, dated chart markup, disabled demo assignments, and exit demo, with no runtime errors.
@@ -32,4 +32,10 @@ CSV/JSON imports connect exported records; live LMS/ERP connectors are not claim
 
 ## Release behavior
 
-The Render branch is main, as confirmed by the user. Release preparation uses a separate checkout so existing staged local work is not replaced. Hosted MySQL TLS configuration is preserved. Startup adds only the two source-import tables using CREATE TABLE IF NOT EXISTS; existing account and source tables are not reset. The existing server delivers the frontend plus the new success assets.
+The Render branch is main, as confirmed by the user. Release preparation uses a separate checkout so existing staged local work is not replaced. Hosted MySQL TLS configuration is preserved. Startup adds only three source-import/configuration tables using CREATE TABLE IF NOT EXISTS; existing account and source tables are not reset. The existing server delivers the frontend plus the new success assets.
+
+## Expanded brief completion
+
+Complete: requested 35/20/15/10/15/5 weights; administrator weight/rule settings with audit; seven-source extended indicators; academic/placement/engagement flags; low-confidence warnings; performance categories; separate distribution charts; semester, risk, attendance, and score filters; sorting and 25-row pagination; clickable comparisons and segments; improvement/decline checks with comparable coverage; intervention center and evidence history; read-only synthetic CSV validation; detailed README and demo. Existing agent APIs and Campus Buddy now read the same unified records. Repeated LMS risk uses actual dated LMS observations, not carried-forward values.
+
+Partial: responsive CSS and keyboard controls are implemented and DOM navigation tests pass, but a real desktop/mobile visual review was unavailable. Placement officers use approved department-scoped faculty accounts; a separate placement-only role is not provided. Institutional integration uses existing tables and exported CSV/JSON; automatic live ERP/LMS connectors are not provided. CSV updates registered records and does not provision accounts. Statistical prediction models are intentionally unimplemented because suitable labelled outcomes were not established. Hosted deployment must be verified separately from GitHub CI.

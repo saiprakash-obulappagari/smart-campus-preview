@@ -9,11 +9,14 @@ function notFound(req, res) {
 
 function errorHandler(err, req, res, next) {
 
-    console.error(err);
+    console.error('Request failed:', err.code || err.type || err.name || 'UNKNOWN');
 
-    res.status(500).json({
+    const invalidJson = err.type === 'entity.parse.failed';
+    const tooLarge = err.type === 'entity.too.large';
+    const unavailable = ['ECONNREFUSED','PROTOCOL_CONNECTION_LOST','ER_CON_COUNT_ERROR','ETIMEDOUT'].includes(err.code);
+    res.status(invalidJson ? 400 : tooLarge ? 413 : unavailable ? 503 : 500).json({
         success: false,
-        message: "Internal server error"
+        message: invalidJson ? 'Invalid JSON request body.' : tooLarge ? 'Request is too large. Use a smaller import batch.' : unavailable ? 'The database is temporarily unavailable. Try again shortly.' : 'Internal server error'
     });
 }
 

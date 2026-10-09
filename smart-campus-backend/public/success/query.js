@@ -1,0 +1,14 @@
+(function(root){
+ function filtered(students,f={}){
+  const numeric=value=>value===''||value==null?null:Number(value),minA=numeric(f.attendanceMin),maxA=numeric(f.attendanceMax),minS=numeric(f.scoreMin),maxS=numeric(f.scoreMax),q=(f.search||'').toLowerCase();
+  const rows=students.filter(s=>{
+   const attendance=s.data.attendance?.overall;
+   return (!q||`${s.name} ${s.campusId}`.toLowerCase().includes(q))&&(!f.department||s.department===f.department)&&(!f.semester||String(s.semester)===String(f.semester))&&(!f.segment||s.segments.some(g=>g.key===f.segment))&&(!f.academicRisk||s.risk.academic.level===(f.academicRisk==='UNKNOWN'?null:f.academicRisk))&&(!f.placementRisk||s.risk.placement.level===(f.placementRisk==='UNKNOWN'?null:f.placementRisk))&&(!f.engagementRisk||s.risk.engagement.level===(f.engagementRisk==='UNKNOWN'?null:f.engagementRisk))&&(minA==null||(attendance!=null&&attendance>=minA))&&(maxA==null||(attendance!=null&&attendance<=maxA))&&(minS==null||(s.successScore!=null&&s.successScore>=minS))&&(maxS==null||(s.successScore!=null&&s.successScore<=maxS))&&(!f.risk||(f.risk==='academic'?s.risk.academic.level==='HIGH':f.risk==='placement'?s.risk.placement.level==='HIGH':f.risk==='missing'?s.scoreStatus!=='COMPLETE':s.recommendations.length>0));
+  });
+  const severity=s=>Math.max(...['academic','placement','engagement'].map(d=>({HIGH:3,MEDIUM:2,LOW:1}[s.risk[d].level]||0))),placement=s=>s.drivers.find(d=>d.category==='placement').score;
+  return rows.sort((a,b)=>f.sort==='success'?(b.successScore??-1)-(a.successScore??-1):f.sort==='attendance'?(b.data.attendance?.overall??-1)-(a.data.attendance?.overall??-1):f.sort==='placement'?(placement(b)??-1)-(placement(a)??-1):f.sort==='name'?a.name.localeCompare(b.name):severity(b)-severity(a)||(a.successScore??101)-(b.successScore??101));
+ }
+ function distribution(students){const bins=[{label:'0–39',min:0,max:39.999},{label:'40–59',min:40,max:59.999},{label:'60–74',min:60,max:74.999},{label:'75–89',min:75,max:89.999},{label:'90–100',min:90,max:100}];return bins.map(b=>({...b,count:students.filter(s=>s.successScore!=null&&s.successScore>=b.min&&s.successScore<=b.max).length}));}
+ function semesterTrends(students){const groups=new Map();for(const s of students){const latest=new Map();for(const h of s.history)if(h.semester!=null&&h.score!=null)latest.set(h.semester,h);for(const [semester,h]of latest){if(!groups.has(semester))groups.set(semester,[]);groups.get(semester).push(h);}}return [...groups].sort(([a],[b])=>a-b).map(([semester,rows])=>({semester,count:rows.length,score:rows.reduce((sum,h)=>sum+h.score,0)/rows.length,coverage:rows.reduce((sum,h)=>sum+h.coverage,0)/rows.length}));}
+ const api={filtered,distribution,semesterTrends};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.CampusQuery=api;
+})(typeof window!=='undefined'?window:globalThis);

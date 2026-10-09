@@ -6,9 +6,12 @@ function demoCampus(){
   const profile={id:i+1,campusId,name,department,year:'3rd Year'};if(!v)return buildStudent(profile);
   const [cgpa,marks,attendance,lms,engagement,coding,aptitude,interview,skills,feedback]=v;
   const data={academic:{cgpa,marks,backlogs:i===4?3:i===0?1:0,subjectPerformance:marks},attendance:{overall:attendance,subjects:{Mathematics:attendance,DBMS:Math.min(100,attendance+3)}},lms:{loginFrequency:lms,assignmentCompletion:lms,learningActivity:lms},engagement:{events:engagement,clubs:engagement,hackathons:engagement,certifications:engagement},placement:{coding,aptitude,interview,readiness:Math.round((coding+aptitude+interview)/3*100)/100},skills:{technical:skills,soft:skills,assessment:skills},feedback:{satisfaction:feedback,faculty:feedback}};
-  const events=[0,1,2].map(month=>({measuredAt:`2026-0${7+month}-01T09:00:00Z`,source:'Synthetic hackathon dataset',data:Object.fromEntries(Object.entries(data).map(([category,values])=>[category,Object.fromEntries(Object.entries(values).map(([key,value])=>[key,typeof value==='number'&&!['cgpa','backlogs'].includes(key)?Math.max(0,Math.min(100,value+(category==='academic'&&key==='marks'&&i===2?(2-month)*8:-(2-month)*3))):value]))]))}));
+  data.academic.semester=i%2?6:5;data.placement.mockInterviews=i===0?1:3;data.placement.preparationActivities=i===0?0:2;
+  data.skills.communication=skills;data.skills.teamwork=skills;data.skills.problemSolving=skills;
+  data.lms.learningProgress=lms;data.engagement.extracurricular=engagement;
+  const events=[0,1,2].map(month=>({measuredAt:`2026-0${7+month}-01T09:00:00Z`,source:'Synthetic hackathon dataset',data:Object.fromEntries(Object.entries(data).map(([category,values])=>[category,Object.fromEntries(Object.entries(values).map(([key,value])=>[key,key==='semester'?(month===2?value:value-1):typeof value==='number'&&!['cgpa','backlogs','mockInterviews','preparationActivities'].includes(key)?Math.max(0,Math.min(100,value+(category==='academic'&&key==='marks'&&i===2?(2-month)*8:-(2-month)*6))):value]))]))}));
   return buildStudent(profile,[],events);
  });
- return {success:true,mode:'DEMO',role:'DEMO',notice:'Synthetic demonstration data. No college records are read or changed.',students,summary:summarize(students),integrationReady:false};
+ return {success:true,mode:'DEMO',role:'DEMO',notice:'Synthetic demonstration data. No college records are read or changed.',students,summary:summarize(students),configuration:require('./successConfiguration').configuration(),integrationReady:false};
 }
 module.exports=demoCampus;

@@ -1,0 +1,8 @@
+"studentId","category","source","measuredAt","cgpa","marks","backlogs","subjectPerformance","semester","overall","subjects","loginFrequency","assignmentCompletion","learningActivity","learningProgress","events","clubs","hackathons","certifications","extracurricular","coding","aptitude","interview","readiness","mockInterviews","preparationActivities","technical","soft","assessment","communication","teamwork","problemSolving","satisfaction","faculty"
+"DEMO101","academic","Synthetic demo preview","2026-09-01T09:00:00Z","8.2","82","1","82","5","","","","","","","","","","","","","","","","","","","","","","","","",""
+"DEMO101","attendance","Synthetic demo preview","2026-09-01T09:00:00Z","","","","","","80","{""Mathematics"":80,""DBMS"":83}","","","","","","","","","","","","","","","","","","","","","","",""
+"DEMO101","lms","Synthetic demo preview","2026-09-01T09:00:00Z","","","","","","","","80","80","80","80","","","","","","","","","","","","","","","","","","",""
+"DEMO101","engagement","Synthetic demo preview","2026-09-01T09:00:00Z","","","","","","","","","","","","72","72","72","72","72","","","","","","","","","","","","","",""
+"DEMO101","placement","Synthetic demo preview","2026-09-01T09:00:00Z","","","","","","","","","","","","","","","","","25","68","48","47","1","0","","","","","","","",""
+"DEMO101","skills","Synthetic demo preview","2026-09-01T09:00:00Z","","","","","","","","","","","","","","","","","","","","","","","65","65","65","65","65","65","",""
+"DEMO101","feedback","Synthetic demo preview","2026-09-01T09:00:00Z","","","","","","","","","","","","","","","","","","","","","","","","","","","","","70","70"

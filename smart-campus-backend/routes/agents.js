@@ -12,10 +12,10 @@ const router=express.Router();router.use(authenticate);
 const config=configure(process.env.AGENT_RULES_JSON?JSON.parse(process.env.AGENT_RULES_JSON):{});
 router.param('id',(req,res,next,id)=>{if(!/^\d+$/.test(id)||!Number.isSafeInteger(Number(id))||Number(id)<1)return res.status(400).json({success:false,message:'Invalid student ID'});next();});
 router.get('/segments',authorize('FACULTY','ADMIN'),async(req,res,next)=>{
- try{res.json({success:true,...segmentationAgent(await loadRoster(req.user),config)});}catch(error){next(error);}
+ try{const students=await loadRoster(req.user),definitions=require('../services/successEngine').segmentDefinitions;res.json({success:true,agent:'segmentation',version:2,studentCount:students.length,segments:definitions.map(definition=>({...definition,count:students.filter(s=>s.segments.some(g=>g.key===definition.key)).length,students:students.filter(s=>s.segments.some(g=>g.key===definition.key)).map(s=>({id:s.id}))})),unclassified:students.filter(s=>!s.segments.length).map(s=>({id:s.id,reason:'No rule match or insufficient data'})),note:'Current rule-defined groups overlap and are not permanent student labels.'});}catch(error){next(error);}
 });
 for(const [endpoint,agent] of [['scores',scoreAgent],['risk',riskAgent],['recommendations',interventionAgent]])router.get(`/students/:id/${endpoint}`,scope,async(req,res,next)=>{
- try{const student=await loadStudent(req.params.id);if(!student)return res.status(404).json({success:false,message:'Student not found'});res.json({success:true,studentId:student.id,provenance:student.provenance,...agent(student.indicators,config)});}catch(error){next(error);}
+ try{const student=await loadStudent(req.params.id);if(!student)return res.status(404).json({success:false,message:'Student not found'});const result=endpoint==='risk'?{agent:'risk',version:2,...student.risk}:endpoint==='recommendations'?{agent:'interventions',version:2,recommendations:student.recommendations,outcome:'NOT_EVALUATED'}:{agent:'score',version:2,successScore:student.successScore,coverage:student.coverage,drivers:student.drivers,academic:{...student.drivers.find(d=>d.category==='academic')},placement:{...student.drivers.find(d=>d.category==='placement')},method:student.method};res.json({success:true,studentId:student.id,provenance:student.provenance,...result});}catch(error){next(error);}
 });
 router.post('/students/:id/observations',authorize('FACULTY','ADMIN'),scope,async(req,res,next)=>{
  try{
@@ -34,7 +34,7 @@ router.post('/students/:id/recommendations/:key/approve',authorize('FACULTY','AD
   c=await db.getConnection();await c.beginTransaction();
   const [studentLock]=await c.query('SELECT id FROM students WHERE id=? FOR UPDATE',[req.params.id]);
   if(!studentLock.length){await c.rollback();return res.status(404).json({success:false,message:'Student not found'});}
-  const student=await loadStudent(req.params.id),recommendation=interventionAgent(student.indicators,config).recommendations.find(item=>item.key===req.params.key);
+  const student=await loadStudent(req.params.id),recommendation=student.recommendations.find(item=>item.key===req.params.key);
   if(!recommendation){await c.rollback();return res.status(404).json({success:false,message:'No current recommendation for this indicator.'});}
   const [existing]=await c.query("SELECT id FROM interventions WHERE student_id=? AND title=? AND status IN ('ASSIGNED','IN_PROGRESS')",[student.id,recommendation.title]);
   if(existing.length){await c.rollback();return res.status(409).json({success:false,message:'An active intervention already exists.'});}

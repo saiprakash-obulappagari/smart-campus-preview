@@ -24,3 +24,10 @@ CREATE TABLE IF NOT EXISTS student_source_records (
  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
  FOREIGN KEY (verified_by) REFERENCES users(id)
 );
+CREATE TABLE IF NOT EXISTS student_success_settings (
+ id INT PRIMARY KEY,
+ configuration JSON NOT NULL,
+ updated_by INT NOT NULL,
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ FOREIGN KEY (updated_by) REFERENCES users(id)
+);

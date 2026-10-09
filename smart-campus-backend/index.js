@@ -28,9 +28,10 @@ const {
 
 const app = express();
 const fs = require('fs');
-for (const file of ['index.html', 'companion.js', 'faculty-signup.html', 'faculty-signup.js']) {
+for (const file of ['index.html', 'faculty-signup.html', 'faculty-signup.js']) {
     app.get('/' + file, (req, res) => res.sendFile(file, { root: path.resolve(__dirname, '..') }));
 }
+app.get('/companion.js', (req, res) => res.sendFile('companion.js', { root: path.join(__dirname, 'public/success') }));
 app.get('/', (req, res) => res.sendFile('index.html', { root: path.resolve(__dirname, '..') }));
 app.use('/success-assets', express.static(path.join(__dirname, 'public/success')));
 app.use('/admin', express.static(path.resolve(__dirname, '../admin')));
@@ -39,7 +40,7 @@ app.get('/style.css', (req, res, next) => {
     catch (error) { next(error); }
 });
 app.get('/script.js', (req, res, next) => {
-    try { res.type('application/javascript').send(fs.readFileSync(path.resolve(__dirname, '../script.js'), 'utf8') + '\n' + fs.readFileSync(path.join(__dirname, 'public/success/success.js'), 'utf8')); }
+    try { res.type('application/javascript').send([fs.readFileSync(path.resolve(__dirname, '../script.js'), 'utf8'),fs.readFileSync(path.join(__dirname, 'public/success/query.js'), 'utf8'),fs.readFileSync(path.join(__dirname, 'public/success/success.js'), 'utf8'),fs.readFileSync(path.join(__dirname, 'public/success/advanced.js'), 'utf8')].join('\n')); }
     catch (error) { next(error); }
 });
 

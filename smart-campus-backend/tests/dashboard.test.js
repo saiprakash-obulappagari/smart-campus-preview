@@ -1,0 +1,8 @@
+const test=require('node:test'),assert=require('node:assert/strict');
+const query=require('../public/success/query'),students=require('../services/demoCampus')().students;
+test('department and semester filters share the same record set',()=>{const rows=query.filtered(students,{department:'CSE',semester:5});assert.equal(rows.length,2);assert(rows.every(s=>s.department==='CSE'&&s.semester===5));});
+test('academic, placement and attendance ranges exclude unknown records',()=>{assert.equal(query.filtered(students,{placementRisk:'HIGH'}).length,1);assert(query.filtered(students,{attendanceMin:75}).every(s=>s.data.attendance.overall>=75));assert.equal(query.filtered(students,{academicRisk:'UNKNOWN'}).length,1);});
+test('score range and sorting use computed scores rather than prototype examples',()=>{const rows=query.filtered(students,{scoreMin:70,scoreMax:100,sort:'success'});assert(rows.every(s=>s.successScore>=70&&s.successScore<=100));assert(rows.every((s,i)=>!i||rows[i-1].successScore>=s.successScore));});
+test('distribution counts agree with the filtered directory',()=>{const rows=query.filtered(students,{department:'CSE'}),bins=query.distribution(rows);assert.equal(bins.reduce((sum,b)=>sum+b.count,0),rows.filter(s=>s.successScore!=null).length);});
+test('semester chart uses recorded histories and reports sample sizes',()=>{const rows=query.semesterTrends(students);assert(rows.length>=2);assert(rows.every(r=>r.count>0&&r.coverage===100));});
+test('attendance and placement sorting place unknown data last',()=>{for(const sort of ['attendance','placement'])assert.equal(query.filtered(students,{sort}).at(-1).campusId,'DEMO106');});
