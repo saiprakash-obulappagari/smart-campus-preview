@@ -24,6 +24,10 @@ services:
         sync: false
       - key: DB_NAME
         sync: false
+      - key: DB_SSL
+        value: "true"
+      - key: DB_SSL_CA
+        value: rds-ap-south-1-ca.pem
       - key: OPENAI_API_KEY
         sync: false
       - key: OPENAI_MODEL
