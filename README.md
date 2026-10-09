@@ -13,6 +13,19 @@ Node.js, Express, vanilla JavaScript and MySQL application for verified student 
 
 Branches identify review/maintenance ownership. Imported implementation commits retain the actual committing account; they do not claim teammate authorship. Existing legacy branches remain available for comparison.
 
+## Current delivery and review queue
+
+| Responsible reviewer | Real work item | Implementation PR |
+| --- | --- | --- |
+| Prakash | [Database review #1](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/1) | [Database #2](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/2) |
+| Dhanunjay | [Backend review #3](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/3) | [Backend #4](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/4) |
+| Janardhan | [Frontend review #5](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/5) | [Frontend #6](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/6) |
+| Vamshi | [UI/UX review #7](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/7) | [Styling #8](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/8) |
+
+[Live CI runs](https://github.com/saiprakash-obulappagari/smart-campus-preview/actions) · [Open issues](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues) · [Pull requests](https://github.com/saiprakash-obulappagari/smart-campus-preview/pulls)
+
+These links are the source of current status. Human reviews, account assignments and production deployment are not implied by passing CI. Confirm teammate GitHub handles before assigning accounts. Repository owners should require PR review and the `validate` check on main; the current publishing account has write permission but cannot configure repository protection.
+
 ## Integration
 
 The current implementation is delivered through four role-specific pull requests. All four are needed for the complete application. Database and styling can merge first; backend and frontend depend on their contracts. Every change should have an issue, a branch and a reviewed pull request. CI records actual checks, not simulated activity.
