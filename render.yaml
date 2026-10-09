@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: smart-campus-analytics
+    runtime: node
+    plan: free
+    branch: main
+    buildCommand: npm --prefix smart-campus-backend ci
+    startCommand: npm --prefix smart-campus-backend start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-6-luna

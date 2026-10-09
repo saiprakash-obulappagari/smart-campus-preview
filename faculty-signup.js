@@ -15,7 +15,7 @@ signupForm.addEventListener('submit', async event => {
     if (!payload.name || !payload.facultyId) { message.textContent = 'Name and faculty ID are required.'; return; }
     button.disabled = true; button.textContent = 'Creating account...'; message.textContent = '';
     try {
-        const response = await fetch('http://localhost:5000/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const response = await fetch((location.port==='5500'?'http://localhost:5000':location.origin)+'/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         const data = await response.json();
         if (!response.ok || !data.success) throw new Error(data.message || 'Could not create account. Please try again.');
         signupForm.reset(); message.className = 'good'; message.textContent = 'Faculty application submitted. Your administrator must verify and approve your account before you can log in.';

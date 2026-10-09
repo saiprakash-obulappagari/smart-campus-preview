@@ -30,7 +30,7 @@
   target.innerHTML=chat.map(message=>`<div class="buddy-message ${message.role==='user'?'user':''}"><b>${message.role==='user'?'You':'Buddy'}</b><p>${esc(message.content)}</p>${(message.sources||[]).map(source=>{const url=safeUrl(source.url);return url?`<a target="_blank" rel="noopener noreferrer" href="${esc(url)}">${esc(source.title||'Source')}</a><br>`:'';}).join('')}</div>`).join('');
  }
  async function request(path,options={}){
-  const response=await fetch('http://localhost:5000/api/companion'+path,{...options,headers:{Authorization:'Bearer '+authToken,'Content-Type':'application/json'}});
+  const response=await fetch((location.port==='5500'?'http://localhost:5000':location.origin)+'/api/companion'+path,{...options,headers:{Authorization:'Bearer '+authToken,'Content-Type':'application/json'}});
   const data=await response.json();if(!response.ok)throw new Error(data.message||'Assistant unavailable');return data;
  }
  async function refresh(){

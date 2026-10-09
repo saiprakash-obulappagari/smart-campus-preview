@@ -15,7 +15,7 @@ function loginForm(){
 return `<div class="form-group"><label>Email / ID</label><input id="email" placeholder="${role==='student'?'student@campus.edu':'faculty@campus.edu'}"></div><div class="form-group"><label>Password</label><input type="password" id="password" placeholder="••••••••"></div><button class="btn primary full" onclick="doLogin()">Login</button><p style="text-align:center;color:#697386">New here? <a href="#" onclick="showRegister();return false">Create account</a></p><p style="text-align:center"><a href="faculty-signup.html">Create a faculty account</a></p><p style="text-align:center;font-size:12px;color:#98a1b2">Use your registered email and password</p>`}
 function switchRole(r,el){role=r;document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));el.classList.add("active");document.getElementById("loginForm").innerHTML=loginForm()}
 function showRegister(){document.getElementById("authTitle").textContent=role==="student"?"Student Registration":"Faculty Registration";document.getElementById("loginForm").innerHTML=`<div class="form-group"><label>Full Name</label><input id="regname" placeholder="Your name"></div><div class="form-group"><label>${role==="student"?"Student ID":"Faculty ID"}</label><input id="regid"></div><div class="form-group"><label>College Email</label><input id="regemail" type="email"></div><div class="form-group"><label>Department</label><select id="dept"><option>CSE</option><option>ECE</option><option>IT</option><option>EEE</option><option>MECH</option></select></div><div class="form-group"><label>Password</label><input id="regpass" type="password"></div><button class="btn primary full" onclick="register()">Create Account</button><p style="text-align:center"><a href="#" onclick="render();return false">Back to login</a></p>`}
-const AUTH_API = "http://localhost:5000/api/auth";
+const API_BASE = location.port === "5500" ? "http://localhost:5000" : location.origin; const AUTH_API = API_BASE+"/api/auth";
 let authPending = false;
 async function register(){
  if(authPending)return;
@@ -95,7 +95,7 @@ function drawCharts(){let c=document.getElementById("trend");if(!c||typeof Chart
 page="login";if(new URLSearchParams(location.search).get("role")==="faculty")role="faculty";render();
 function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 async function progressRequest(path,options={}){
- const response=await fetch("http://localhost:5000/api/interventions"+path,{...options,headers:{"Content-Type":"application/json",Authorization:"Bearer "+authToken}});
+ const response=await fetch(API_BASE+"/api/interventions"+path,{...options,headers:{"Content-Type":"application/json",Authorization:"Bearer "+authToken}});
  const data=await response.json();if(!response.ok)throw new Error(data.message||"Request failed");return data;
 }
 async function loadProgressPanel(){
@@ -137,7 +137,7 @@ async function sendStudentPlan(button){
  const plan=studentImprovementPlan;if(!plan||plan.studentId!==selectedStudentId)return;
  button.disabled=true;
  try{
-  const response=await fetch("http://localhost:5000/api/students",{headers:{Authorization:"Bearer "+authToken}});
+  const response=await fetch(API_BASE+"/api/students",{headers:{Authorization:"Bearer "+authToken}});
   const data=await response.json();if(!response.ok)throw new Error(data.message||"Cannot find student account.");
   const student=data.students.find(item=>item.student_id===plan.studentId);
   if(!student)throw new Error("This student has no registered database account. Register the student before sending tasks.");
@@ -150,7 +150,7 @@ async function refreshFacultyRoster(redraw=true){
  if(!["faculty","admin"].includes(role)||!authToken||rosterLoading)return;
  const token=authToken;rosterLoading=true;
  try{
-  const response=await fetch("http://localhost:5000/api/students",{headers:{Authorization:"Bearer "+token}});
+  const response=await fetch(API_BASE+"/api/students",{headers:{Authorization:"Bearer "+token}});
   const data=await response.json();if(!response.ok)throw new Error(data.message||"Cannot load students");
   if(token!==authToken||!["faculty","admin"].includes(role))return;
   const number=value=>value==null?null:Number(value);
@@ -169,8 +169,8 @@ window.addEventListener("focus",()=>{if(currentUser&&["faculty","admin"].include
 let myPerformance=null,mySubmission=null;
 const performanceFields=[["attendance","Attendance"],["lms","LMS Activity"],["engagement","Engagement"],["coding","Coding"],["aptitude","Aptitude"],["interview","Mock Interview"],["skills","Skills"],["feedback","Feedback"]];
 async function loadMyPerformance(){
- const response=await fetch("http://localhost:5000/api/students/me/performance",{headers:{Authorization:"Bearer "+authToken}});
- const data=await response.json();if(!response.ok)throw new Error(data.message||"Cannot load performance");myPerformance=data.data;mySubmission=data.submission;const healthResponse=await fetch("http://localhost:5000/api/companion/progress",{headers:{Authorization:"Bearer "+authToken}});if(healthResponse.ok)academicRisk=(await healthResponse.json()).risk;
+ const response=await fetch(API_BASE+"/api/students/me/performance",{headers:{Authorization:"Bearer "+authToken}});
+ const data=await response.json();if(!response.ok)throw new Error(data.message||"Cannot load performance");myPerformance=data.data;mySubmission=data.submission;const healthResponse=await fetch(API_BASE+"/api/companion/progress",{headers:{Authorization:"Bearer "+authToken}});if(healthResponse.ok)academicRisk=(await healthResponse.json()).risk;
 }
 function studentPerformanceDashboard(){
  return `${academicHealthCard()}<div class="card"><h3>My performance</h3><p>Enter your current percentages. Values need faculty verification before they affect official progress.</p><p class="label">${escapeHtml(myPerformance?.student_id)} · ${escapeHtml(myPerformance?.department)} · Overall progress: ${myPerformance?.success_score==null?"Not recorded":myPerformance.success_score+"%"}</p><p>Latest submission: <b>${escapeHtml(mySubmission?.status||"None")}</b> ${escapeHtml(mySubmission?.review_reason||"")}</p><form onsubmit="saveMyPerformance(event)"><div class="grid two">${performanceFields.map(([key,label])=>`<div class="form-group"><label for="performance-${key}">${label} (%)</label><input id="performance-${key}" name="${key}" type="number" min="0" max="100" step="0.01" required value="${myPerformance?.[key]??""}"></div>`).join("")}</div><p class="label">Overall progress is the average of these eight values. Your faculty can review your entries.</p><div class="form-group"><label for="performanceEvidence">Supporting evidence or record references</label><textarea id="performanceEvidence" name="evidence" required maxlength="4000" style="width:100%;min-height:90px" placeholder="Describe the attendance register, assessment results, or LMS records your faculty should verify."></textarea></div><button class="btn primary" type="submit">Submit for verification</button><p id="performanceMessage" role="status" aria-live="polite"></p></form></div><h3 class="section-title">Tasks from your faculty</h3><div class="card" id="assignedTasks">Loading tasks...</div>`;
@@ -179,12 +179,12 @@ async function saveMyPerformance(event){
  event.preventDefault();const form=event.target,button=form.querySelector('button[type="submit"]'),message=document.getElementById("performanceMessage");if(button.disabled)return;
  const fields=new FormData(form),payload=Object.fromEntries(performanceFields.map(([key])=>[key,Number(fields.get(key))]));payload.evidence=fields.get("evidence");button.disabled=true;
  try{
-  const response=await fetch("http://localhost:5000/api/students/me/performance",{method:"PUT",headers:{"Content-Type":"application/json",Authorization:"Bearer "+authToken},body:JSON.stringify(payload)});
+  const response=await fetch(API_BASE+"/api/students/me/performance",{method:"PUT",headers:{"Content-Type":"application/json",Authorization:"Bearer "+authToken},body:JSON.stringify(payload)});
   const data=await response.json();if(!response.ok)throw new Error(data.message||"Could not save performance");await loadMyPerformance();render();toast("Submitted for verification. Official scores stay unchanged until approval.");
  }catch(error){message.textContent=error.message;}finally{button.disabled=false;}
 }
 async function reviewRequest(path,options={}){
- const response=await fetch("http://localhost:5000/api/reviews"+path,{...options,headers:{Authorization:"Bearer "+authToken,"Content-Type":"application/json"}});
+ const response=await fetch(API_BASE+"/api/reviews"+path,{...options,headers:{Authorization:"Bearer "+authToken,"Content-Type":"application/json"}});
  const data=await response.json();if(!response.ok)throw new Error(data.message||"Review failed");return data;
 }
 async function loadReviewPanel(){
@@ -219,7 +219,7 @@ function academicHealthCard(){
  return `<section class="card" style="margin-bottom:20px;text-align:center;background:linear-gradient(135deg,#f5f3ff,#eff6ff)"><h2>My Academic Health</h2><div style="width:190px;height:190px;border-radius:50%;margin:20px auto;display:grid;place-items:center;background:conic-gradient(${color} ${risk.score*3.6}deg,#e5e7eb 0)"><div style="width:155px;height:155px;border-radius:50%;background:#fff;display:flex;flex-direction:column;justify-content:center"><strong style="font-size:48px;color:${color}">${risk.score}</strong><span>/100 · ${risk.level} RISK</span></div></div><p style="color:${color};font-weight:700">${risk.level==="HIGH"?"Needs immediate attention":risk.level==="MEDIUM"?"Needs focused improvement":"Maintain your progress"}</p><p class="label">Based on approved percentages · score-based estimate</p><button class="btn secondary" onclick="document.getElementById('riskExplanation').hidden=!document.getElementById('riskExplanation').hidden">Why am I at risk?</button> <button class="btn primary" onclick="document.getElementById('dailyRiskPlan').hidden=false">Generate Personalized Plan</button><div id="riskExplanation" hidden style="text-align:left;margin-top:16px"><p>${escapeHtml(risk.explanation)}</p><p class="label">${escapeHtml(risk.method)}</p></div><div id="dailyRiskPlan" hidden style="text-align:left;margin-top:20px"><h3>Your seven-day improvement plan</h3>${risk.daily.map(day=>`<div class="insight" style="margin:10px 0"><b>Day ${day.day} · ${escapeHtml(day.focus)}</b><p>${escapeHtml(day.instruction)}</p><small>${escapeHtml(day.check)}</small></div>`).join("")}<p class="label">Completed practice does not change official risk automatically. Faculty-approved reassessments update your score.</p></div></section>`;
 }
 async function agentRequest(path,options={}){
- const response=await fetch("http://localhost:5000/api/agents"+path,{...options,headers:{Authorization:"Bearer "+authToken,"Content-Type":"application/json"}});const data=await response.json();if(!response.ok)throw new Error(data.message||"Agent request failed");return data;
+ const response=await fetch(API_BASE+"/api/agents"+path,{...options,headers:{Authorization:"Bearer "+authToken,"Content-Type":"application/json"}});const data=await response.json();if(!response.ok)throw new Error(data.message||"Agent request failed");return data;
 }
 async function loadAgentAssessment(){
  const panel=document.getElementById("agentAssessment"),student=facultyRoster.find(s=>s.id===selectedStudentId);if(!panel||!student)return;

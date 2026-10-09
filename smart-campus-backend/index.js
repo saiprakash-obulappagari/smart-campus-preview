@@ -30,6 +30,10 @@ const app = express();
 app.use('/admin', express.static(path.resolve(__dirname, '../admin')));
 app.get('/style.css', (req, res) => res.sendFile(path.resolve(__dirname, '../style.css')));
 app.get('/script.js', (req, res) => res.sendFile(path.resolve(__dirname, '../script.js')));
+for (const file of ['index.html','companion.js','faculty-signup.html','faculty-signup.js']) {
+    app.get('/'+file, (req,res)=>res.sendFile(path.resolve(__dirname,'../'+file)));
+}
+app.get('/', (req,res)=>res.sendFile(path.resolve(__dirname,'../index.html')));
 
 
 /* ================================
