@@ -120,7 +120,7 @@ render=function(){
  if(currentUser&&['dashboard','analytics','students','student-details','profile'].includes(page))loadSuccessCampus();
 };
 const successOriginalLogout=logout;
-logout=function(){successDemo=false;successCampus=null;successLoadedAt=0;successError='';successImportPreview=null;successOriginalLogout();};
+logout=function(){successDemo=false;successCampus=null;successLoadedAt=0;successError='';successImportPreview=null;successFilters={search:'',department:'',risk:'',segment:'',sort:'priority'};selectedStudentId=null;successOriginalLogout();};
 const successOriginalRoster=refreshFacultyRoster;
 refreshFacultyRoster=async function(redraw=true){if(successDemo)return;return successOriginalRoster(redraw);};
 const successOriginalStudentDashboard=studentPerformanceDashboard;
