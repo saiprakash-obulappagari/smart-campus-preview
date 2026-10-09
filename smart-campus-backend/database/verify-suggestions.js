@@ -17,6 +17,8 @@ const assert = require('node:assert/strict');
         for (const role of ['FACULTY', 'STUDENT', 'STUDENT']) {
             const [result] = await connection.query('INSERT INTO users (name,email,password_hash,role) VALUES (?,?,?,?)', ['Suggestion test', `suggestion-${suffix}-${ids.length}@example.invalid`, await bcrypt.hash('TemporaryTest!', 4), role]);
             ids.push(result.insertId);
+            await connection.query("INSERT INTO account_access (user_id,status) VALUES (?,'APPROVED')", [result.insertId]);
+            if (role === 'FACULTY') await connection.query("INSERT INTO faculty (user_id,department) VALUES (?,'CSE')", [result.insertId]);
         }
         const studentIds = [];
         for (let i = 1; i <= 2; i++) {
@@ -31,7 +33,7 @@ const assert = require('node:assert/strict');
         app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
         server = await new Promise(resolve => { const instance = app.listen(0, '127.0.0.1', () => resolve(instance)); });
         const request = async (id, role, path, method = 'GET') => {
-            const response = await fetch(`http://127.0.0.1:${server.address().port}/api/interventions${path}`, { method, headers: { Authorization: 'Bearer ' + jwt.sign({ id, role }, process.env.JWT_SECRET), 'Content-Type': 'application/json' }, ...(method === 'POST' ? { body: '{}' } : {}) });
+            const response = await fetch(`http://127.0.0.1:${server.address().port}/api/interventions${path}`, { method, headers: { Authorization: 'Bearer ' + jwt.sign({ id, role, sessionVersion: 1 }, process.env.JWT_SECRET), 'Content-Type': 'application/json' }, ...(method === 'POST' ? { body: '{}' } : {}) });
             return { status: response.status, data: await response.json() };
         };
         const plans = await request(ids[0], 'FACULTY', '/suggestions');
