@@ -6,10 +6,10 @@ Node.js, Express, vanilla JavaScript and MySQL application for verified student 
 
 | Team member | Responsibility | Delivery branch |
 | --- | --- | --- |
-| Prakash | Team lead and database | `codex/prakash-db` |
-| Janardhan | Frontend behavior | `codex/janardhan-frontend` |
-| Dhanunjay | Backend, access controls and agents | `codex/dhanunjay-backend` |
-| Vamshi | UI/UX and styling | `codex/vamshi-ui-ux` |
+| Prakash | Team lead and database | `prakash-db` |
+| Janardhan | Frontend behavior | `janardhan-frontend` |
+| Dhanunjay | Backend, access controls and agents | `dhanunjay-backend` |
+| Vamshi | UI/UX and styling | `vamshi-ui-ux` |
 
 Branches identify review/maintenance ownership. Imported implementation commits retain the actual committing account; they do not claim teammate authorship. Existing legacy branches remain available for comparison.
 
