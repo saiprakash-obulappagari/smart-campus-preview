@@ -5,3 +5,9 @@ node_modules/
 .github-delivery/
 publish-*.js
 publish-*.json
+
+.challenge-build/
+
+tmp/
+
+output/

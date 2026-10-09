@@ -7,10 +7,11 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "node --test tests/agents.test.js",
+    "test": "node --test tests/agents.test.js tests/success.test.js tests/api.test.js",
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "seed": "node database/seed.js"
+    "seed": "node database/seed.js",
+    "migrate:sources": "node database/migrate-sources.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

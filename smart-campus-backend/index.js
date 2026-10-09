@@ -27,13 +27,21 @@ const {
 
 
 const app = express();
-app.use('/admin', express.static(path.resolve(__dirname, '../admin')));
-app.get('/style.css', (req, res) => res.sendFile(path.resolve(__dirname, '../style.css')));
-app.get('/script.js', (req, res) => res.sendFile(path.resolve(__dirname, '../script.js')));
-for (const file of ['index.html','companion.js','faculty-signup.html','faculty-signup.js']) {
-    app.get('/'+file, (req,res)=>res.sendFile(path.resolve(__dirname,'../'+file)));
+const fs = require('fs');
+for (const file of ['index.html', 'companion.js', 'faculty-signup.html', 'faculty-signup.js']) {
+    app.get('/' + file, (req, res) => res.sendFile(file, { root: path.resolve(__dirname, '..') }));
 }
-app.get('/', (req,res)=>res.sendFile(path.resolve(__dirname,'../index.html')));
+app.get('/', (req, res) => res.sendFile('index.html', { root: path.resolve(__dirname, '..') }));
+app.use('/success-assets', express.static(path.join(__dirname, 'public/success')));
+app.use('/admin', express.static(path.resolve(__dirname, '../admin')));
+app.get('/style.css', (req, res, next) => {
+    try { res.type('text/css').send(fs.readFileSync(path.resolve(__dirname, '../style.css'), 'utf8') + '\n' + fs.readFileSync(path.join(__dirname, 'public/success/success.css'), 'utf8')); }
+    catch (error) { next(error); }
+});
+app.get('/script.js', (req, res, next) => {
+    try { res.type('application/javascript').send(fs.readFileSync(path.resolve(__dirname, '../script.js'), 'utf8') + '\n' + fs.readFileSync(path.join(__dirname, 'public/success/success.js'), 'utf8')); }
+    catch (error) { next(error); }
+});
 
 
 /* ================================
@@ -101,6 +109,7 @@ app.use(
 app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/companion', require('./routes/companion'));
 app.use('/api/agents', require('./routes/agents'));
+app.use('/api/success', require('./routes/success'));
 
 app.use(
     "/api/students",
@@ -135,13 +144,10 @@ const PORT =
     Number(process.env.PORT || 5000);
 
 
-app.listen(
-    PORT,
-    () => {
-
-        console.log(
-            `Smart Campus API running at http://localhost:${PORT}`
-        );
-
-    }
-);
+async function start() {
+    try { await require('./database/sourceTables')(db); }
+    catch (error) { console.warn('Source import setup unavailable:', error.code || error.message); }
+    return app.listen(PORT, () => console.log(`Smart Campus API running at http://localhost:${PORT}`));
+}
+if (require.main === module) start().catch(error => { console.error(error.message); process.exitCode = 1; });
+module.exports = app;

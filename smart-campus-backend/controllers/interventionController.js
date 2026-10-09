@@ -1,5 +1,6 @@
 const db = require("../config/db");
 const { getSuggestions } = require('../services/suggestionService');
+const { loadUnified } = require('../services/unifiedData');
 
 async function suggestions(req, res, next) {
     try { res.json({ success: true, data: await getSuggestions(req.user) }); }
@@ -27,33 +28,16 @@ async function createIntervention(req, res, next) {
             description
         } = req.body;
 
+        if (!Number.isSafeInteger(Number(studentId)) || Number(studentId) < 1 || typeof title !== 'string' || !title.trim() || title.length > 200 || typeof description !== 'string' || !description.trim() || description.length > 8000) {
+            return res.status(400).json({ success: false, message: 'Provide a valid student ID, title, and task description.' });
+        }
+
         const [scope] = await db.query('SELECT department FROM students WHERE id=?', [studentId]);
         if (!scope.length || (req.user.role === 'FACULTY' && scope[0].department !== req.user.department)) return res.status(403).json({ success: false, message: 'Student outside your assigned department.' });
 
-        const [student] = await db.query(
-            `SELECT
-                ss.success_score,
-                ra.risk_score
-             FROM students s
-
-             LEFT JOIN success_scores ss
-                ON s.id = ss.student_id
-
-             LEFT JOIN risk_assessments ra
-                ON s.id = ra.student_id
-
-             WHERE s.id = ?
-
-             ORDER BY ss.id DESC, ra.id DESC
-             LIMIT 1`,
-            [studentId]
-        );
-
-        const beforeSuccess =
-            student[0]?.success_score || 0;
-
-        const beforeRisk =
-            student[0]?.risk_score || 100;
+        const student = (await loadUnified(req.user, { studentId })).students[0];
+        const beforeSuccess = student?.successScore ?? null;
+        const beforeRisk = beforeSuccess == null ? null : 100 - beforeSuccess;
 
         const [result] = await db.query(
             `

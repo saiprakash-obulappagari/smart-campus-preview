@@ -1,0 +1,8 @@
+"studentId","category","source","measuredAt","cgpa","marks","backlogs","subjectPerformance","overall","subjects","loginFrequency","assignmentCompletion","learningActivity","events","clubs","hackathons","certifications","coding","aptitude","interview","readiness","technical","soft","assessment","satisfaction","faculty"
+"REPLACE_WITH_REGISTERED_ID","academic","REPLACE_WITH_VERIFIED_SOURCE","2026-09-01T09:00:00Z","8.2","82","1","82","","","","","","","","","","","","","","","","","",""
+"REPLACE_WITH_REGISTERED_ID","attendance","REPLACE_WITH_VERIFIED_SOURCE","2026-09-01T09:00:00Z","","","","","80","{""Mathematics"":80,""DBMS"":83}","","","","","","","","","","","","","","","",""
+"REPLACE_WITH_REGISTERED_ID","lms","REPLACE_WITH_VERIFIED_SOURCE","2026-09-01T09:00:00Z","","","","","","","80","80","80","","","","","","","","","","","","",""
+"REPLACE_WITH_REGISTERED_ID","engagement","REPLACE_WITH_VERIFIED_SOURCE","2026-09-01T09:00:00Z","","","","","","","","","","72","72","72","72","","","","","","","","",""
+"REPLACE_WITH_REGISTERED_ID","placement","REPLACE_WITH_VERIFIED_SOURCE","2026-09-01T09:00:00Z","","","","","","","","","","","","","","25","68","48","47","","","","",""
+"REPLACE_WITH_REGISTERED_ID","skills","REPLACE_WITH_VERIFIED_SOURCE","2026-09-01T09:00:00Z","","","","","","","","","","","","","","","","","","65","65","65","",""
+"REPLACE_WITH_REGISTERED_ID","feedback","REPLACE_WITH_VERIFIED_SOURCE","2026-09-01T09:00:00Z","","","","","","","","","","","","","","","","","","","","","70","70"

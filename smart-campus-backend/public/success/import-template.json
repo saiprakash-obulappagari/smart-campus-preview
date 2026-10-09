@@ -1,0 +1,83 @@
+[
+  {
+    "studentId": "REPLACE_WITH_REGISTERED_ID",
+    "category": "academic",
+    "source": "REPLACE_WITH_VERIFIED_SOURCE",
+    "measuredAt": "2026-09-01T09:00:00Z",
+    "values": {
+      "cgpa": 8.2,
+      "marks": 82,
+      "backlogs": 1,
+      "subjectPerformance": 82
+    }
+  },
+  {
+    "studentId": "REPLACE_WITH_REGISTERED_ID",
+    "category": "attendance",
+    "source": "REPLACE_WITH_VERIFIED_SOURCE",
+    "measuredAt": "2026-09-01T09:00:00Z",
+    "values": {
+      "overall": 80,
+      "subjects": {
+        "Mathematics": 80,
+        "DBMS": 83
+      }
+    }
+  },
+  {
+    "studentId": "REPLACE_WITH_REGISTERED_ID",
+    "category": "lms",
+    "source": "REPLACE_WITH_VERIFIED_SOURCE",
+    "measuredAt": "2026-09-01T09:00:00Z",
+    "values": {
+      "loginFrequency": 80,
+      "assignmentCompletion": 80,
+      "learningActivity": 80
+    }
+  },
+  {
+    "studentId": "REPLACE_WITH_REGISTERED_ID",
+    "category": "engagement",
+    "source": "REPLACE_WITH_VERIFIED_SOURCE",
+    "measuredAt": "2026-09-01T09:00:00Z",
+    "values": {
+      "events": 72,
+      "clubs": 72,
+      "hackathons": 72,
+      "certifications": 72
+    }
+  },
+  {
+    "studentId": "REPLACE_WITH_REGISTERED_ID",
+    "category": "placement",
+    "source": "REPLACE_WITH_VERIFIED_SOURCE",
+    "measuredAt": "2026-09-01T09:00:00Z",
+    "values": {
+      "coding": 25,
+      "aptitude": 68,
+      "interview": 48,
+      "readiness": 47
+    }
+  },
+  {
+    "studentId": "REPLACE_WITH_REGISTERED_ID",
+    "category": "skills",
+    "source": "REPLACE_WITH_VERIFIED_SOURCE",
+    "measuredAt": "2026-09-01T09:00:00Z",
+    "values": {
+      "technical": 65,
+      "soft": 65,
+      "assessment": 65
+    }
+  },
+  {
+    "studentId": "REPLACE_WITH_REGISTERED_ID",
+    "category": "feedback",
+    "source": "REPLACE_WITH_VERIFIED_SOURCE",
+    "measuredAt": "2026-09-01T09:00:00Z",
+    "values": {
+      "satisfaction": 70,
+      "faculty": 70
+    }
+  }
+]
