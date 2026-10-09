@@ -17,10 +17,10 @@ Branches identify review/maintenance ownership. Imported implementation commits 
 
 | Responsible reviewer | Real work item | Implementation PR |
 | --- | --- | --- |
-| Prakash | [Database review #1](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/1) | [Database #2](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/2) |
-| Dhanunjay | [Backend review #3](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/3) | [Backend #4](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/4) |
-| Janardhan | [Frontend review #5](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/5) | [Frontend #6](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/6) |
-| Vamshi | [UI/UX review #7](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/7) | [Styling #8](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/8) |
+| Prakash | [Database review #1](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/1) | [Database #9](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/9) |
+| Dhanunjay | [Backend review #3](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/3) | [Backend #10](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/10) |
+| Janardhan | [Frontend review #5](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/5) | [Frontend #11](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/11) |
+| Vamshi | [UI/UX review #7](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues/7) | [Styling #12](https://github.com/saiprakash-obulappagari/smart-campus-preview/pull/12) |
 
 [Live CI runs](https://github.com/saiprakash-obulappagari/smart-campus-preview/actions) · [Open issues](https://github.com/saiprakash-obulappagari/smart-campus-preview/issues) · [Pull requests](https://github.com/saiprakash-obulappagari/smart-campus-preview/pulls)
 
@@ -28,7 +28,7 @@ These links are the source of current status. Human reviews, account assignments
 
 ## Integration
 
-The current implementation is delivered through four role-specific pull requests. All four are needed for the complete application. Database and styling can merge first; backend and frontend depend on their contracts. Every change should have an issue, a branch and a reviewed pull request. CI records actual checks, not simulated activity.
+The four role-specific implementation pull requests are merged into main. The combined checkout passed nine unit tests and both MySQL integration suites; the dependency audit reported zero vulnerabilities. Human device/accessibility reviews remain tracked in the linked issues. Every change should have an issue, a branch and a reviewed pull request. CI records actual checks, not simulated activity.
 
 After integration:
 
