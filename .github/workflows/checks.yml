@@ -1,0 +1,33 @@
+name: Project checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reject tracked secrets and dependency folders
+        run: |
+          if git ls-files | grep -E '(^|/)(node_modules/|\.env$)' ; then
+            echo 'Environment files and installed dependencies must not be tracked.'
+            exit 1
+          fi
+      - name: Check JavaScript syntax
+        run: |
+          while IFS= read -r file; do node --check "$file"; done < <(git ls-files '*.js')
+      - name: Install backend and run agent tests when present
+        run: |
+          if [ -f smart-campus-backend/package.json ]; then
+            cd smart-campus-backend
+            npm ci
+            npm test
+          else
+            echo 'Backend is not part of this branch; dependency tests do not apply.'
+          fi

@@ -1,0 +1,27 @@
+name: Team work item
+description: Track a real implementation, review or bug-fix task
+title: "[Area] Concrete task"
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and intended outcome
+    validations:
+      required: true
+  - type: dropdown
+    id: owner
+    attributes:
+      label: Responsible member
+      options:
+        - Prakash — database / team lead
+        - Janardhan — frontend
+        - Dhanunjay — backend
+        - Vamshi — UI/UX
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria and verification
+    validations:
+      required: true
